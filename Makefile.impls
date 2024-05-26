@@ -1,0 +1,36 @@
+# HOWTO add a new implementation (named "foo"):
+# - Add "foo" to the IMPLS variable (alphabetical order)
+# - Add a new "foo_STEP_TO_PROG" variable.
+# - Add an "impls/foo/run" script.
+# - Add an "impls/foo/Makefile"
+# - Add an "impls/foo/Dockerfile"
+# - Implement each step in "impls/foo/".
+
+#
+# Implementation specific command line settings
+#
+
+# python, js, cpp, or neko
+haxe_MODE = neko
+
+#
+# Implementation specific settings
+#
+
+IMPLS = cpp-23 js
+
+step5_EXCLUDES += $(if $(filter cpp,$(haxe_MODE)),haxe,) # cpp finishes 10,000, segfaults at 100,000
+
+#
+# Implementation specific utility functions
+#
+
+haxe_STEP_TO_PROG_neko          = impls/haxe/$($(1)).n
+haxe_STEP_TO_PROG_python        = impls/haxe/$($(1)).py
+haxe_STEP_TO_PROG_cpp           = impls/haxe/cpp/$($(1))
+haxe_STEP_TO_PROG_js            = impls/haxe/$($(1)).js
+
+# Map of step (e.g. "step8") to executable file for that step
+cpp-23_STEP_TO_PROG =        impls/cpp-23/$($(1))
+haxe_STEP_TO_PROG =          $(haxe_STEP_TO_PROG_$(haxe_MODE))
+js_STEP_TO_PROG =            impls/js/$($(1)).js
